@@ -1,0 +1,282 @@
+[
+    {
+        "id": "c7b65b8560e22290",
+        "type": "mqtt in",
+        "z": "9f4ae65aa9cc4ab5",
+        "name": "",
+        "topic": "MQTT32115164/TempOpenWeather/Temperatura",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "6b13e6694b682eeb",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 640,
+        "y": 220,
+        "wires": [
+            [
+                "db18c38998e6cf08"
+            ]
+        ]
+    },
+    {
+        "id": "8f50d928522d5d4f",
+        "type": "function",
+        "z": "9f4ae65aa9cc4ab5",
+        "name": "function 2",
+        "func": "var temp = msg.payload[0];\nvar umidade = msg.payload[1];\nmsg.payload = \"Temperatura do sensor = \" + temp + \" Umidade do sensor : \" +umidade;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1140,
+        "y": 560,
+        "wires": [
+            [
+                "8d53cfc1f2c652fa"
+            ]
+        ]
+    },
+    {
+        "id": "8d53cfc1f2c652fa",
+        "type": "node-red-contrib-whatsapp-cmb-send-message",
+        "z": "9f4ae65aa9cc4ab5",
+        "name": "",
+        "account": "8ed5a9b4e92a798b",
+        "text": "payload",
+        "inputtypemessage": "msg",
+        "rejectssl": false,
+        "x": 1360,
+        "y": 560,
+        "wires": [
+            [
+                "21f8f19222ea6ffd"
+            ]
+        ]
+    },
+    {
+        "id": "22ff9e12763b938b",
+        "type": "influxdb out",
+        "z": "9f4ae65aa9cc4ab5",
+        "influxdb": "b153ae6822dbaff6",
+        "name": "",
+        "measurement": "temperatura",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "F1rst",
+        "bucket": "32115164/TESTMACK",
+        "x": 1550,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "21f8f19222ea6ffd",
+        "type": "debug",
+        "z": "9f4ae65aa9cc4ab5",
+        "name": "debug 1",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1620,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "ba061419611ede2f",
+        "type": "mqtt in",
+        "z": "9f4ae65aa9cc4ab5",
+        "name": "",
+        "topic": "MQTT32115164/TempOpenWeather/Umidade",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "6b13e6694b682eeb",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 630,
+        "y": 400,
+        "wires": [
+            [
+                "db18c38998e6cf08"
+            ]
+        ]
+    },
+    {
+        "id": "db18c38998e6cf08",
+        "type": "join",
+        "z": "9f4ae65aa9cc4ab5",
+        "name": "",
+        "mode": "custom",
+        "build": "array",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 970,
+        "y": 320,
+        "wires": [
+            [
+                "8f50d928522d5d4f",
+                "8077c7987996d820",
+                "b6561fbc6f4ce911"
+            ]
+        ]
+    },
+    {
+        "id": "8077c7987996d820",
+        "type": "function",
+        "z": "9f4ae65aa9cc4ab5",
+        "name": "function 3",
+        "func": "var temp = msg.payload[1];\ntemp = parseFloat(temp)\nmsg.payload = temp;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1160,
+        "y": 320,
+        "wires": [
+            [
+                "c9c7e3c55f92cfa7",
+                "31438c74fa6fb953"
+            ]
+        ]
+    },
+    {
+        "id": "b6561fbc6f4ce911",
+        "type": "function",
+        "z": "9f4ae65aa9cc4ab5",
+        "name": "function 4",
+        "func": "var temp = msg.payload[0];\ntemp = parseFloat(temp)\nmsg.payload = temp;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1160,
+        "y": 180,
+        "wires": [
+            [
+                "22ff9e12763b938b",
+                "64aece26352424ea"
+            ]
+        ]
+    },
+    {
+        "id": "64aece26352424ea",
+        "type": "debug",
+        "z": "9f4ae65aa9cc4ab5",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1400,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "c9c7e3c55f92cfa7",
+        "type": "influxdb out",
+        "z": "9f4ae65aa9cc4ab5",
+        "influxdb": "b153ae6822dbaff6",
+        "name": "",
+        "measurement": "umidade",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "F1rst",
+        "bucket": "32115164/TESTMACK",
+        "x": 1540,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "31438c74fa6fb953",
+        "type": "debug",
+        "z": "9f4ae65aa9cc4ab5",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1400,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "6b13e6694b682eeb",
+        "type": "mqtt-broker",
+        "name": "broker.hivemq.com",
+        "broker": "broker.hivemq.com",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "8ed5a9b4e92a798b",
+        "type": "node-red-contrib-whatsapp-cmb-account",
+        "name": "Whats"
+    },
+    {
+        "id": "b153ae6822dbaff6",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": "8086",
+        "protocol": "http",
+        "database": "database",
+        "name": "",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "2.0",
+        "url": "https://us-east-1-1.aws.cloud2.influxdata.com",
+        "rejectUnauthorized": true
+    }
+]
